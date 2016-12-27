@@ -13,12 +13,10 @@ class <%= controller_class_name %>Controller < ApplicationController
   end
   
   def new
-    render :new, locals: { <%= singular_table_name %>: <%= orm_class.build(class_name, "new_#{singular_table_name}_params") %> }
+    render :new, locals: { <%= singular_table_name %>: new_<%= singular_table_name %> }
   end
   
   def create
-    new_<%= singular_table_name %> = <%= orm_class.build(class_name, "new_#{singular_table_name}_params") %>
-    
     if new_<%= singular_table_name %>.update(<%= "#{singular_table_name}_form_params" %>)
       redirect_to <%= index_helper %>_url, notice: <%= %Q("#{human_name} created.") %>
     else
@@ -46,6 +44,10 @@ class <%= controller_class_name %>Controller < ApplicationController
   private
     def current_<%= singular_table_name %>
       @<%= singular_table_name %> ||= <%= orm_class.find(class_name, "params[:id]") %>
+    end
+    
+    def new_<%= singular_table_name %>
+      @<%= singular_table_name %> ||= <%= orm_class.build(class_name, "new_#{singular_table_name}_params") %>
     end
     
     def <%= "new_#{singular_table_name}_params" %>
